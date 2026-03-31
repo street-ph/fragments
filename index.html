@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noimageindex">
+<title>sketchbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* === Reset === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #fff;
+  color: #111;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+/* === Header === */
+.site-header {
+  padding: 40px 40px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: #111;
+}
+
+.site-subtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  color: #aaa;
+  letter-spacing: 0.03em;
+}
+
+/* === Main flow === */
+.flow {
+  padding: 40px;
+}
+
+/* === Grid === */
+.grid {
+  column-count: 4;
+  column-gap: 20px;
+}
+
+.grid-item {
+  break-inside: avoid;
+  margin-bottom: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.grid-item img {
+  width: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.grid-item:hover img {
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
+}
+
+/* === Text block in grid === */
+.grid-item.text-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  min-height: 180px;
+  cursor: default;
+}
+
+.grid-item.text-block .text-content {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #333;
+  white-space: pre-line;
+  text-align: left;
+}
+
+/* === Expanded view === */
+.expanded-section {
+  width: 100vw;
+  margin-left: -40px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 60px 40px;
+  animation: fadeIn 0.35s ease;
+}
+
+.expanded-section .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  z-index: 10;
+}
+.expanded-section .close-btn:hover { color: #333; }
+
+.expanded-section .nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 16px;
+  z-index: 10;
+  transition: color 0.15s;
+}
+.expanded-section .nav-arrow:hover { color: #333; }
+.expanded-section .nav-arrow:disabled { opacity: 0; cursor: default; }
+.expanded-section .nav-arrow[data-dir="prev"] { left: 8px; }
+.expanded-section .nav-arrow[data-dir="next"] { right: 8px; }
+
+.img-stage {
+  position: relative;
+  max-width: min(88vw, 1400px);
+  max-height: 85vh;
+  cursor: zoom-in;
+}
+.img-stage.enlarged {
+  max-height: none;
+  cursor: zoom-out;
+}
+.img-stage img {
+  max-width: min(88vw, 1400px);
+  max-height: 85vh;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.img-stage.enlarged img {
+  max-height: none;
+}
+.img-stage .img-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.img-stage .img-back.visible {
+  opacity: 1;
+}
+
+/* === Expanded text block === */
+.expanded-section.text-expanded {
+  min-height: 80vh;
+}
+.expanded-section.text-expanded .text-content-expanded {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  line-height: 1.7;
+  color: #222;
+  max-width: 640px;
+  white-space: pre-line;
+  text-align: left;
+}
+
+/* === Footer === */
+.site-footer {
+  padding: 60px 40px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-footer span {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #ccc;
+  letter-spacing: 0.03em;
+}
+.site-footer a {
+  color: #ccc;
+  text-decoration: none;
+}
+.site-footer a:hover { color: #888; }
+
+/* === Animation === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* === Copy protection === */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* ===================== */
+/* === RESPONSIVE ====== */
+/* ===================== */
+
+/* 6 columns — ultrawide */
+@media (min-width: 2200px) { .grid { column-count: 6; } }
+
+/* 5 columns */
+@media (min-width: 1800px) and (max-width: 2199px) { .grid { column-count: 5; } }
+
+/* 4 columns — default above */
+
+/* 3 columns */
+@media (max-width: 1400px) { .grid { column-count: 3; } }
+
+/* 2 columns — tablet landscape: simple feed, no interaction */
+@media (max-width: 1100px) {
+  .grid { column-count: 2; column-gap: 16px; }
+  .grid-item { margin-bottom: 16px; cursor: default; }
+  .grid-item img { pointer-events: none; }
+  .flow { padding: 24px; }
+  .site-header { padding: 24px 24px 0; }
+  .site-footer { padding: 40px 24px 24px; }
+}
+
+/* 1 column — mobile: pure feed */
+@media (max-width: 640px) {
+  .grid { column-count: 1; column-gap: 0; }
+  .grid-item { margin-bottom: 12px; cursor: default; }
+  .grid-item.text-block { padding: 24px 16px; min-height: 120px; }
+  .grid-item.text-block .text-content { font-size: 15px; }
+  .flow { padding: 12px; }
+  .site-header { padding: 16px 12px 0; }
+  .site-footer { padding: 32px 12px 16px; }
+}
+
+</style>
+</head>
+<body>
+<header class="site-header">
+  <span class="site-title">sketchbook</span>
+  <span class="site-subtitle">dmitrii kremenskii</span>
+</header>
+<main class="flow" id="flow"></main>
+<footer class="site-footer">
+  <span>&copy; 2025 dmitrii kremenskii</span>
+  <span><a href="mailto:hi@kremenskii.art">hi@kremenskii.art</a></span>
+</footer>
+<script>
+const items = [
+  {
+    "type": "image",
+    "id": "a9-69",
+    "thumb": "photos/thumb/a9-69.jpg",
+    "full": "photos/full/a9-69.jpg",
+    "aspect": 0.826
+  },
+  {
+    "type": "image",
+    "id": "67-2242",
+    "thumb": "photos/thumb/67-2242.jpg",
+    "full": "photos/full/67-2242.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "b0-3708",
+    "thumb": "photos/thumb/b0-3708.jpg",
+    "full": "photos/full/b0-3708.jpg",
+    "aspect": 0.654
+  },
+  {
+    "type": "image",
+    "id": "e6-19",
+    "thumb": "photos/thumb/e6-19.jpg",
+    "full": "photos/full/e6-19.jpg",
+    "aspect": 0.716
+  },
+  {
+    "type": "image",
+    "id": "14-72",
+    "thumb": "photos/thumb/14-72.jpg",
+    "full": "photos/full/14-72.jpg",
+    "aspect": 0.63
+  },
+  {
+    "type": "image",
+    "id": "1d-86",
+    "thumb": "photos/thumb/1d-86.jpg",
+    "full": "photos/full/1d-86.jpg",
+    "aspect": 0.683
+  },
+  {
+    "type": "image",
+    "id": "0a-66",
+    "thumb": "photos/thumb/0a-66.jpg",
+    "full": "photos/full/0a-66.jpg",
+    "aspect": 0.627
+  },
+  {
+    "type": "image",
+    "id": "67-5",
+    "thumb": "photos/thumb/67-5.jpg",
+    "full": "photos/full/67-5.jpg",
+    "aspect": 0.681
+  },
+  {
+    "type": "image",
+    "id": "04-93",
+    "thumb": "photos/thumb/04-93.jpg",
+    "full": "photos/full/04-93.jpg",
+    "aspect": 0.663
+  },
+  {
+    "type": "image",
+    "id": "e4-85",
+    "thumb": "photos/thumb/e4-85.jpg",
+    "full": "photos/full/e4-85.jpg",
+    "aspect": 0.715
+  },
+  {
+    "type": "image",
+    "id": "57-1680",
+    "thumb": "photos/thumb/57-1680.jpg",
+    "full": "photos/full/57-1680.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "ca-67",
+    "thumb": "photos/thumb/ca-67.jpg",
+    "full": "photos/full/ca-67.jpg",
+    "aspect": 0.563
+  },
+  {
+    "type": "image",
+    "id": "21-1835",
+    "thumb": "photos/thumb/21-1835.jpg",
+    "full": "photos/full/21-1835.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "f3-74",
+    "thumb": "photos/thumb/f3-74.jpg",
+    "full": "photos/full/f3-74.jpg",
+    "aspect": 0.664
+  },
+  {
+    "type": "image",
+    "id": "68-4101",
+    "thumb": "photos/thumb/68-4101.jpg",
+    "full": "photos/full/68-4101.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "7c-4136",
+    "thumb": "photos/thumb/7c-4136.jpg",
+    "full": "photos/full/7c-4136.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "36-1791",
+    "thumb": "photos/thumb/36-1791.jpg",
+    "full": "photos/full/36-1791.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "b2-7",
+    "thumb": "photos/thumb/b2-7.jpg",
+    "full": "photos/full/b2-7.jpg",
+    "aspect": 0.667
+  },
+  {
+    "type": "image",
+    "id": "3a-2248",
+    "thumb": "photos/thumb/3a-2248.jpg",
+    "full": "photos/full/3a-2248.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "89-5966",
+    "thumb": "photos/thumb/89-5966.jpg",
+    "full": "photos/full/89-5966.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "18-21",
+    "thumb": "photos/thumb/18-21.jpg",
+    "full": "photos/full/18-21.jpg",
+    "aspect": 0.719
+  },
+  {
+    "type": "image",
+    "id": "68-4187",
+    "thumb": "photos/thumb/68-4187.jpg",
+    "full": "photos/full/68-4187.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "b1-12",
+    "thumb": "photos/thumb/b1-12.jpg",
+    "full": "photos/full/b1-12.jpg",
+    "aspect": 0.595
+  },
+  {
+    "type": "image",
+    "id": "8f-1",
+    "thumb": "photos/thumb/8f-1.jpg",
+    "full": "photos/full/8f-1.jpg",
+    "aspect": 1.096
+  },
+  {
+    "type": "image",
+    "id": "0f-3605",
+    "thumb": "photos/thumb/0f-3605.jpg",
+    "full": "photos/full/0f-3605.jpg",
+    "aspect": 1.498
+  },
+  {
+    "type": "image",
+    "id": "66-36",
+    "thumb": "photos/thumb/66-36.jpg",
+    "full": "photos/full/66-36.jpg",
+    "aspect": 0.81
+  },
+  {
+    "type": "image",
+    "id": "01-1833",
+    "thumb": "photos/thumb/01-1833.jpg",
+    "full": "photos/full/01-1833.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "8e-3709",
+    "thumb": "photos/thumb/8e-3709.jpg",
+    "full": "photos/full/8e-3709.jpg",
+    "aspect": 0.642
+  },
+  {
+    "type": "image",
+    "id": "54-4093",
+    "thumb": "photos/thumb/54-4093.jpg",
+    "full": "photos/full/54-4093.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "a3-2199",
+    "thumb": "photos/thumb/a3-2199.jpg",
+    "full": "photos/full/a3-2199.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "cb-1665",
+    "thumb": "photos/thumb/cb-1665.jpg",
+    "full": "photos/full/cb-1665.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "cd-4104",
+    "thumb": "photos/thumb/cd-4104.jpg",
+    "full": "photos/full/cd-4104.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "63-88",
+    "thumb": "photos/thumb/63-88.jpg",
+    "full": "photos/full/63-88.jpg",
+    "aspect": 0.681
+  },
+  {
+    "type": "image",
+    "id": "35-4124",
+    "thumb": "photos/thumb/35-4124.jpg",
+    "full": "photos/full/35-4124.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "8d-92",
+    "thumb": "photos/thumb/8d-92.jpg",
+    "full": "photos/full/8d-92.jpg",
+    "aspect": 0.647
+  },
+  {
+    "type": "image",
+    "id": "3a-4094",
+    "thumb": "photos/thumb/3a-4094.jpg",
+    "full": "photos/full/3a-4094.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "4a-14",
+    "thumb": "photos/thumb/4a-14.jpg",
+    "full": "photos/full/4a-14.jpg",
+    "aspect": 0.578
+  },
+  {
+    "type": "image",
+    "id": "e4-33",
+    "thumb": "photos/thumb/e4-33.jpg",
+    "full": "photos/full/e4-33.jpg",
+    "aspect": 0.791
+  },
+  {
+    "type": "image",
+    "id": "a0-2241",
+    "thumb": "photos/thumb/a0-2241.jpg",
+    "full": "photos/full/a0-2241.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "84-3407",
+    "thumb": "photos/thumb/84-3407.jpg",
+    "full": "photos/full/84-3407.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "d6-77",
+    "thumb": "photos/thumb/d6-77.jpg",
+    "full": "photos/full/d6-77.jpg",
+    "aspect": 0.76
+  },
+  {
+    "type": "image",
+    "id": "fb-9",
+    "thumb": "photos/thumb/fb-9.jpg",
+    "full": "photos/full/fb-9.jpg",
+    "aspect": 0.688
+  },
+  {
+    "type": "image",
+    "id": "03-1825",
+    "thumb": "photos/thumb/03-1825.jpg",
+    "full": "photos/full/03-1825.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "7c-1",
+    "thumb": "photos/thumb/7c-1.jpg",
+    "full": "photos/full/7c-1.jpg",
+    "aspect": 0.632
+  },
+  {
+    "type": "image",
+    "id": "a9-1826",
+    "thumb": "photos/thumb/a9-1826.jpg",
+    "full": "photos/full/a9-1826.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "64-61",
+    "thumb": "photos/thumb/64-61.jpg",
+    "full": "photos/full/64-61.jpg",
+    "aspect": 0.663
+  },
+  {
+    "type": "image",
+    "id": "f4-1832",
+    "thumb": "photos/thumb/f4-1832.jpg",
+    "full": "photos/full/f4-1832.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "0c-3604",
+    "thumb": "photos/thumb/0c-3604.jpg",
+    "full": "photos/full/0c-3604.jpg",
+    "aspect": 0.667
+  },
+  {
+    "type": "image",
+    "id": "47-8",
+    "thumb": "photos/thumb/47-8.jpg",
+    "full": "photos/full/47-8.jpg",
+    "aspect": 0.685
+  },
+  {
+    "type": "image",
+    "id": "c1-75",
+    "thumb": "photos/thumb/c1-75.jpg",
+    "full": "photos/full/c1-75.jpg",
+    "aspect": 0.731
+  },
+  {
+    "type": "image",
+    "id": "42-34",
+    "thumb": "photos/thumb/42-34.jpg",
+    "full": "photos/full/42-34.jpg",
+    "aspect": 0.832
+  },
+  {
+    "type": "image",
+    "id": "30-24",
+    "thumb": "photos/thumb/30-24.jpg",
+    "full": "photos/full/30-24.jpg",
+    "aspect": 0.847
+  },
+  {
+    "type": "image",
+    "id": "98-65",
+    "thumb": "photos/thumb/98-65.jpg",
+    "full": "photos/full/98-65.jpg",
+    "aspect": 0.66
+  },
+  {
+    "type": "image",
+    "id": "ec-1830",
+    "thumb": "photos/thumb/ec-1830.jpg",
+    "full": "photos/full/ec-1830.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "90-6866",
+    "thumb": "photos/thumb/90-6866.jpg",
+    "full": "photos/full/90-6866.jpg",
+    "aspect": 0.725
+  },
+  {
+    "type": "image",
+    "id": "95-4453",
+    "thumb": "photos/thumb/95-4453.jpg",
+    "full": "photos/full/95-4453.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "7f-6867",
+    "thumb": "photos/thumb/7f-6867.jpg",
+    "full": "photos/full/7f-6867.jpg",
+    "aspect": 0.752
+  },
+  {
+    "type": "image",
+    "id": "5f-63",
+    "thumb": "photos/thumb/5f-63.jpg",
+    "full": "photos/full/5f-63.jpg",
+    "aspect": 0.606
+  },
+  {
+    "type": "image",
+    "id": "07-4100",
+    "thumb": "photos/thumb/07-4100.jpg",
+    "full": "photos/full/07-4100.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "cd-4095",
+    "thumb": "photos/thumb/cd-4095.jpg",
+    "full": "photos/full/cd-4095.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "9e-18",
+    "thumb": "photos/thumb/9e-18.jpg",
+    "full": "photos/full/9e-18.jpg",
+    "aspect": 0.699
+  },
+  {
+    "type": "image",
+    "id": "44-84",
+    "thumb": "photos/thumb/44-84.jpg",
+    "full": "photos/full/44-84.jpg",
+    "aspect": 0.712
+  },
+  {
+    "type": "text",
+    "id": "54-3",
+    "text": "Verschiedene Arten, vorübergehend zu sein."
+  },
+  {
+    "type": "image",
+    "id": "28-1227",
+    "thumb": "photos/thumb/28-1227.jpg",
+    "full": "photos/full/28-1227.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "f7-62",
+    "thumb": "photos/thumb/f7-62.jpg",
+    "full": "photos/full/f7-62.jpg",
+    "aspect": 0.64
+  },
+  {
+    "type": "image",
+    "id": "9d-73",
+    "thumb": "photos/thumb/9d-73.jpg",
+    "full": "photos/full/9d-73.jpg",
+    "aspect": 0.634
+  },
+  {
+    "type": "image",
+    "id": "b8-56",
+    "thumb": "photos/thumb/b8-56.jpg",
+    "full": "photos/full/b8-56.jpg",
+    "aspect": 0.793
+  },
+  {
+    "type": "image",
+    "id": "73-1804",
+    "thumb": "photos/thumb/73-1804.jpg",
+    "full": "photos/full/73-1804.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "88-2290",
+    "thumb": "photos/thumb/88-2290.jpg",
+    "full": "photos/full/88-2290.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "04-4111",
+    "thumb": "photos/thumb/04-4111.jpg",
+    "full": "photos/full/04-4111.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "00-3603",
+    "thumb": "photos/thumb/00-3603.jpg",
+    "full": "photos/full/00-3603.jpg",
+    "aspect": 0.667
+  },
+  {
+    "type": "image",
+    "id": "3a-4063",
+    "thumb": "photos/thumb/3a-4063.jpg",
+    "full": "photos/full/3a-4063.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "38-89",
+    "thumb": "photos/thumb/38-89.jpg",
+    "full": "photos/full/38-89.jpg",
+    "aspect": 0.609
+  },
+  {
+    "type": "image",
+    "id": "6e-4125",
+    "thumb": "photos/thumb/6e-4125.jpg",
+    "full": "photos/full/6e-4125.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "7b-4388",
+    "thumb": "photos/thumb/7b-4388.jpg",
+    "full": "photos/full/7b-4388.jpg",
+    "aspect": 1.043
+  },
+  {
+    "type": "image",
+    "id": "2c-17",
+    "thumb": "photos/thumb/2c-17.jpg",
+    "full": "photos/full/2c-17.jpg",
+    "aspect": 0.708
+  },
+  {
+    "type": "image",
+    "id": "f2-6862",
+    "thumb": "photos/thumb/f2-6862.jpg",
+    "full": "photos/full/f2-6862.jpg",
+    "aspect": 0.709
+  },
+  {
+    "type": "image",
+    "id": "17-2201",
+    "thumb": "photos/thumb/17-2201.jpg",
+    "full": "photos/full/17-2201.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "89-1",
+    "thumb": "photos/thumb/89-1.jpg",
+    "full": "photos/full/89-1.jpg",
+    "aspect": 0.719
+  },
+  {
+    "type": "image",
+    "id": "5c-4092",
+    "thumb": "photos/thumb/5c-4092.jpg",
+    "full": "photos/full/5c-4092.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "9d-6",
+    "thumb": "photos/thumb/9d-6.jpg",
+    "full": "photos/full/9d-6.jpg",
+    "aspect": 0.701
+  },
+  {
+    "type": "image",
+    "id": "d6-2297",
+    "thumb": "photos/thumb/d6-2297.jpg",
+    "full": "photos/full/d6-2297.jpg",
+    "aspect": 0.75
+  },
+  {
+    "type": "image",
+    "id": "3c-4381",
+    "thumb": "photos/thumb/3c-4381.jpg",
+    "full": "photos/full/3c-4381.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "21-4056",
+    "thumb": "photos/thumb/21-4056.jpg",
+    "full": "photos/full/21-4056.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "e3-3",
+    "thumb": "photos/thumb/e3-3.jpg",
+    "full": "photos/full/e3-3.jpg",
+    "aspect": 0.683
+  },
+  {
+    "type": "image",
+    "id": "a6-4053",
+    "thumb": "photos/thumb/a6-4053.jpg",
+    "full": "photos/full/a6-4053.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "77-6863",
+    "thumb": "photos/thumb/77-6863.jpg",
+    "full": "photos/full/77-6863.jpg",
+    "aspect": 0.725
+  },
+  {
+    "type": "image",
+    "id": "1e-3460",
+    "thumb": "photos/thumb/1e-3460.jpg",
+    "full": "photos/full/1e-3460.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "ef-2193",
+    "thumb": "photos/thumb/ef-2193.jpg",
+    "full": "photos/full/ef-2193.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "25-91",
+    "thumb": "photos/thumb/25-91.jpg",
+    "full": "photos/full/25-91.jpg",
+    "aspect": 0.708
+  },
+  {
+    "type": "image",
+    "id": "f9-5991",
+    "thumb": "photos/thumb/f9-5991.jpg",
+    "full": "photos/full/f9-5991.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "45-4454",
+    "thumb": "photos/thumb/45-4454.jpg",
+    "full": "photos/full/45-4454.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "f0-60",
+    "thumb": "photos/thumb/f0-60.jpg",
+    "full": "photos/full/f0-60.jpg",
+    "aspect": 0.832
+  },
+  {
+    "type": "image",
+    "id": "74-1827",
+    "thumb": "photos/thumb/74-1827.jpg",
+    "full": "photos/full/74-1827.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "48-76",
+    "thumb": "photos/thumb/48-76.jpg",
+    "full": "photos/full/48-76.jpg",
+    "aspect": 0.842
+  },
+  {
+    "type": "image",
+    "id": "50-11",
+    "thumb": "photos/thumb/50-11.jpg",
+    "full": "photos/full/50-11.jpg",
+    "aspect": 1.159
+  },
+  {
+    "type": "text",
+    "id": "f8-1",
+    "text": "Разные способы быть временным."
+  },
+  {
+    "type": "image",
+    "id": "fb-2247",
+    "thumb": "photos/thumb/fb-2247.jpg",
+    "full": "photos/full/fb-2247.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "fe-2243",
+    "thumb": "photos/thumb/fe-2243.jpg",
+    "full": "photos/full/fe-2243.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "80-1837",
+    "thumb": "photos/thumb/80-1837.jpg",
+    "full": "photos/full/80-1837.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "20-6865",
+    "thumb": "photos/thumb/20-6865.jpg",
+    "full": "photos/full/20-6865.jpg",
+    "aspect": 0.744
+  },
+  {
+    "type": "image",
+    "id": "d9-68",
+    "thumb": "photos/thumb/d9-68.jpg",
+    "full": "photos/full/d9-68.jpg",
+    "aspect": 0.647
+  },
+  {
+    "type": "image",
+    "id": "b0-4182",
+    "thumb": "photos/thumb/b0-4182.jpg",
+    "full": "photos/full/b0-4182.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "f0-81",
+    "thumb": "photos/thumb/f0-81.jpg",
+    "full": "photos/full/f0-81.jpg",
+    "aspect": 0.753
+  },
+  {
+    "type": "image",
+    "id": "2c-55",
+    "thumb": "photos/thumb/2c-55.jpg",
+    "full": "photos/full/2c-55.jpg",
+    "aspect": 0.788
+  },
+  {
+    "type": "image",
+    "id": "a4-4105",
+    "thumb": "photos/thumb/a4-4105.jpg",
+    "full": "photos/full/a4-4105.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "03-20",
+    "thumb": "photos/thumb/03-20.jpg",
+    "full": "photos/full/03-20.jpg",
+    "aspect": 0.715
+  },
+  {
+    "type": "image",
+    "id": "30-87",
+    "thumb": "photos/thumb/30-87.jpg",
+    "full": "photos/full/30-87.jpg",
+    "aspect": 0.618
+  },
+  {
+    "type": "image",
+    "id": "95-80",
+    "thumb": "photos/thumb/95-80.jpg",
+    "full": "photos/full/95-80.jpg",
+    "aspect": 0.711
+  },
+  {
+    "type": "image",
+    "id": "4b-5974",
+    "thumb": "photos/thumb/4b-5974.jpg",
+    "full": "photos/full/4b-5974.jpg",
+    "aspect": 1.782
+  },
+  {
+    "type": "image",
+    "id": "30-1666",
+    "thumb": "photos/thumb/30-1666.jpg",
+    "full": "photos/full/30-1666.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "58-70",
+    "thumb": "photos/thumb/58-70.jpg",
+    "full": "photos/full/58-70.jpg",
+    "aspect": 0.643
+  },
+  {
+    "type": "image",
+    "id": "24-1669",
+    "thumb": "photos/thumb/24-1669.jpg",
+    "full": "photos/full/24-1669.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "75-15",
+    "thumb": "photos/thumb/75-15.jpg",
+    "full": "photos/full/75-15.jpg",
+    "aspect": 0.563
+  },
+  {
+    "type": "image",
+    "id": "40-35",
+    "thumb": "photos/thumb/40-35.jpg",
+    "full": "photos/full/40-35.jpg",
+    "aspect": 0.805
+  },
+  {
+    "type": "image",
+    "id": "0b-3602",
+    "thumb": "photos/thumb/0b-3602.jpg",
+    "full": "photos/full/0b-3602.jpg",
+    "aspect": 0.666
+  },
+  {
+    "type": "image",
+    "id": "48-58",
+    "thumb": "photos/thumb/48-58.jpg",
+    "full": "photos/full/48-58.jpg",
+    "aspect": 0.563
+  },
+  {
+    "type": "image",
+    "id": "44-2287",
+    "thumb": "photos/thumb/44-2287.jpg",
+    "full": "photos/full/44-2287.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "b6-64",
+    "thumb": "photos/thumb/b6-64.jpg",
+    "full": "photos/full/b6-64.jpg",
+    "aspect": 0.744
+  },
+  {
+    "type": "image",
+    "id": "7d-0132",
+    "thumb": "photos/thumb/7d-0132.jpg",
+    "full": "photos/full/7d-0132.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "44-3866",
+    "thumb": "photos/thumb/44-3866.jpg",
+    "full": "photos/full/44-3866.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "46-13",
+    "thumb": "photos/thumb/46-13.jpg",
+    "full": "photos/full/46-13.jpg",
+    "aspect": 0.636
+  },
+  {
+    "type": "image",
+    "id": "8c-4",
+    "thumb": "photos/thumb/8c-4.jpg",
+    "full": "photos/full/8c-4.jpg",
+    "aspect": 0.667
+  },
+  {
+    "type": "image",
+    "id": "14-90",
+    "thumb": "photos/thumb/14-90.jpg",
+    "full": "photos/full/14-90.jpg",
+    "aspect": 0.599
+  },
+  {
+    "type": "text",
+    "id": "d8-2",
+    "text": "Different ways of being temporary."
+  },
+  {
+    "type": "image",
+    "id": "eb-1667",
+    "thumb": "photos/thumb/eb-1667.jpg",
+    "full": "photos/full/eb-1667.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "4b-1908",
+    "thumb": "photos/thumb/4b-1908.jpg",
+    "full": "photos/full/4b-1908.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "25-57",
+    "thumb": "photos/thumb/25-57.jpg",
+    "full": "photos/full/25-57.jpg",
+    "aspect": 0.563
+  },
+  {
+    "type": "image",
+    "id": "1b-1824",
+    "thumb": "photos/thumb/1b-1824.jpg",
+    "full": "photos/full/1b-1824.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "d1-2203",
+    "thumb": "photos/thumb/d1-2203.jpg",
+    "full": "photos/full/d1-2203.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "1f-16",
+    "thumb": "photos/thumb/1f-16.jpg",
+    "full": "photos/full/1f-16.jpg",
+    "aspect": 0.672
+  },
+  {
+    "type": "image",
+    "id": "cd-71",
+    "thumb": "photos/thumb/cd-71.jpg",
+    "full": "photos/full/cd-71.jpg",
+    "aspect": 0.674
+  },
+  {
+    "type": "image",
+    "id": "da-1798",
+    "thumb": "photos/thumb/da-1798.jpg",
+    "full": "photos/full/da-1798.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "8a-1216",
+    "thumb": "photos/thumb/8a-1216.jpg",
+    "full": "photos/full/8a-1216.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "e7-32",
+    "thumb": "photos/thumb/e7-32.jpg",
+    "full": "photos/full/e7-32.jpg",
+    "aspect": 0.805
+  },
+  {
+    "type": "image",
+    "id": "11-4091",
+    "thumb": "photos/thumb/11-4091.jpg",
+    "full": "photos/full/11-4091.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "9f-6864",
+    "thumb": "photos/thumb/9f-6864.jpg",
+    "full": "photos/full/9f-6864.jpg",
+    "aspect": 0.709
+  },
+  {
+    "type": "image",
+    "id": "f5-3600",
+    "thumb": "photos/thumb/f5-3600.jpg",
+    "full": "photos/full/f5-3600.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "ed-2293",
+    "thumb": "photos/thumb/ed-2293.jpg",
+    "full": "photos/full/ed-2293.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "f0-22",
+    "thumb": "photos/thumb/f0-22.jpg",
+    "full": "photos/full/f0-22.jpg",
+    "aspect": 0.672
+  },
+  {
+    "type": "image",
+    "id": "aa-4151",
+    "thumb": "photos/thumb/aa-4151.jpg",
+    "full": "photos/full/aa-4151.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "22-4042",
+    "thumb": "photos/thumb/22-4042.jpg",
+    "full": "photos/full/22-4042.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "2d-2",
+    "thumb": "photos/thumb/2d-2.jpg",
+    "full": "photos/full/2d-2.jpg",
+    "aspect": 0.694
+  },
+  {
+    "type": "image",
+    "id": "33-3651",
+    "thumb": "photos/thumb/33-3651.jpg",
+    "full": "photos/full/33-3651.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "2f-3406",
+    "thumb": "photos/thumb/2f-3406.jpg",
+    "full": "photos/full/2f-3406.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "54-1215",
+    "thumb": "photos/thumb/54-1215.jpg",
+    "full": "photos/full/54-1215.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "2e-4045",
+    "thumb": "photos/thumb/2e-4045.jpg",
+    "full": "photos/full/2e-4045.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "2c-10",
+    "thumb": "photos/thumb/2c-10.jpg",
+    "full": "photos/full/2c-10.jpg",
+    "aspect": 0.725
+  },
+  {
+    "type": "image",
+    "id": "64-4116",
+    "thumb": "photos/thumb/64-4116.jpg",
+    "full": "photos/full/64-4116.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "e6-4041",
+    "thumb": "photos/thumb/e6-4041.jpg",
+    "full": "photos/full/e6-4041.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "ed-83",
+    "thumb": "photos/thumb/ed-83.jpg",
+    "full": "photos/full/ed-83.jpg",
+    "aspect": 0.677
+  },
+  {
+    "type": "image",
+    "id": "11-4097",
+    "thumb": "photos/thumb/11-4097.jpg",
+    "full": "photos/full/11-4097.jpg",
+    "aspect": 1.0
+  },
+  {
+    "type": "image",
+    "id": "f5-2271",
+    "thumb": "photos/thumb/f5-2271.jpg",
+    "full": "photos/full/f5-2271.jpg",
+    "aspect": 0.562
+  },
+  {
+    "type": "image",
+    "id": "fe-82",
+    "thumb": "photos/thumb/fe-82.jpg",
+    "full": "photos/full/fe-82.jpg",
+    "aspect": 0.626
+  }
+];
+const isMobile = window.innerWidth <= 1100;
+let expandedId = null;
+let isEnlarged = false;
+
+function getIdx() {
+  return items.findIndex(i => i.id === expandedId);
+}
+
+function closeExpanded() {
+  expandedId = null;
+  isEnlarged = false;
+  history.replaceState(null, '', window.location.pathname);
+  render();
+  // scroll back to the item in grid
+  requestAnimationFrame(() => {
+    const hash = expandedId;
+    // find closest grid item
+  });
+}
+
+function navigateArrow(newId) {
+  const stage = document.getElementById('img-stage');
+  if (!stage) { expandedId = newId; history.replaceState(null, '', '#' + newId); render(); return; }
+
+  const item = items.find(i => i.id === newId);
+  if (!item || item.type !== 'image') { expandedId = newId; history.replaceState(null, '', '#' + newId); render(); return; }
+
+  const front = document.getElementById('img-front');
+  const back = document.getElementById('img-back');
+
+  back.src = item.full;
+  back.onload = () => {
+    back.classList.add('visible');
+    setTimeout(() => {
+      expandedId = newId;
+      isEnlarged = false;
+      history.replaceState(null, '', '#' + newId);
+      render();
+    }, 300);
+  };
+}
+
+function preloadNeighbors(idx) {
+  [-1, 1].forEach(d => {
+    const n = items[idx + d];
+    if (n && n.type === 'image') { const img = new Image(); img.src = n.full; }
+  });
+}
+
+function rebindArrows(idx) {
+  document.querySelectorAll('.nav-arrow').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const dir = btn.dataset.dir;
+      const next = dir === 'prev' ? idx - 1 : idx + 1;
+      if (next >= 0 && next < items.length) navigateArrow(items[next].id);
+    };
+  });
+}
+
+function render() {
+  const flow = document.getElementById('flow');
+  flow.innerHTML = '';
+
+  if (expandedId && !isMobile) {
+    const idx = getIdx();
+    const item = items[idx];
+    const hasPrev = idx > 0;
+    const hasNext = idx < items.length - 1;
+
+    // Grid before
+    const gridBefore = document.createElement('div');
+    gridBefore.className = 'grid';
+    items.slice(0, idx).forEach(i => gridBefore.appendChild(makeGridItem(i)));
+    flow.appendChild(gridBefore);
+
+    // Expanded section
+    const el = document.createElement('div');
+    el.className = 'expanded-section' + (item.type === 'text' ? ' text-expanded' : '');
+    el.id = item.id;
+
+    if (item.type === 'image') {
+      el.innerHTML = `
+        <button class="close-btn">&times;</button>
+        <button class="nav-arrow" ${!hasPrev ? 'disabled' : ''} data-dir="prev">&#8592;</button>
+        <div class="img-stage" id="img-stage">
+          <img id="img-front" src="${item.full}" alt="${item.id}">
+          <img id="img-back" class="img-back" src="" alt="">
+        </div>
+        <button class="nav-arrow" ${!hasNext ? 'disabled' : ''} data-dir="next">&#8594;</button>
+      `;
+    } else {
+      el.innerHTML = `
+        <button class="close-btn">&times;</button>
+        <button class="nav-arrow" ${!hasPrev ? 'disabled' : ''} data-dir="prev">&#8592;</button>
+        <div class="text-content-expanded">${item.text}</div>
+        <button class="nav-arrow" ${!hasNext ? 'disabled' : ''} data-dir="next">&#8594;</button>
+      `;
+    }
+
+    flow.appendChild(el);
+    el.querySelector('.close-btn').addEventListener('click', (e) => { e.stopPropagation(); closeExpanded(); });
+    rebindArrows(idx);
+
+    if (item.type === 'image') {
+      const stage = el.querySelector('#img-stage');
+      stage.addEventListener('click', (e) => {
+        e.stopPropagation();
+        isEnlarged = !isEnlarged;
+        stage.classList.toggle('enlarged', isEnlarged);
+      });
+      preloadNeighbors(idx);
+    }
+
+    // Grid after
+    const gridAfter = document.createElement('div');
+    gridAfter.className = 'grid';
+    items.slice(idx + 1).forEach(i => gridAfter.appendChild(makeGridItem(i)));
+    flow.appendChild(gridAfter);
+
+  } else {
+    // Simple grid (mobile or no expanded)
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    items.forEach(i => grid.appendChild(makeGridItem(i)));
+    flow.appendChild(grid);
+  }
+}
+
+function makeGridItem(item) {
+  const div = document.createElement('div');
+  div.className = 'grid-item' + (item.type === 'text' ? ' text-block' : '');
+  div.id = 'grid-' + item.id;
+
+  if (item.type === 'image') {
+    const src = isMobile ? item.full : item.thumb;
+    div.innerHTML = `<img src="${src}" alt="${item.id}" loading="lazy">`;
+    if (!isMobile) {
+      div.addEventListener('click', () => {
+        expandedId = item.id;
+        history.replaceState(null, '', '#' + item.id);
+        render();
+        requestAnimationFrame(() => {
+          const el = document.getElementById(item.id);
+          if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        });
+      });
+    }
+  } else {
+    div.innerHTML = `<div class="text-content">${item.text}</div>`;
+    if (!isMobile) {
+      div.addEventListener('click', () => {
+        expandedId = item.id;
+        history.replaceState(null, '', '#' + item.id);
+        render();
+        requestAnimationFrame(() => {
+          const el = document.getElementById(item.id);
+          if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        });
+      });
+    }
+  }
+
+  return div;
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (!expandedId) return;
+  const idx = getIdx();
+  if (e.key === 'Escape') {
+    if (isEnlarged) {
+      isEnlarged = false;
+      const s = document.getElementById('img-stage');
+      if (s) s.classList.remove('enlarged');
+    } else {
+      closeExpanded();
+    }
+  } else if (e.key === 'ArrowLeft' && idx > 0) {
+    navigateArrow(items[idx - 1].id);
+  } else if (e.key === 'ArrowRight' && idx < items.length - 1) {
+    navigateArrow(items[idx + 1].id);
+  }
+});
+
+// Copy protection
+document.addEventListener('contextmenu', (e) => {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+document.addEventListener('dragstart', (e) => {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+
+// Hash navigation on load
+const hash = window.location.hash.slice(1);
+if (hash) {
+  const item = items.find(i => i.id === hash);
+  if (item) expandedId = item.id;
+}
+
+render();
+
+if (expandedId) {
+  requestAnimationFrame(() => {
+    const el = document.getElementById(expandedId);
+    if (el) el.scrollIntoView({ block: 'start' });
+  });
+}
+
+</script>
+</body>
+</html>

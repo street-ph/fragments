@@ -1,0 +1,243 @@
+/* === Reset === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #fff;
+  color: #111;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+}
+
+/* === Header === */
+.site-header {
+  padding: 40px 40px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: #111;
+}
+
+.site-subtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  color: #aaa;
+  letter-spacing: 0.03em;
+}
+
+/* === Main flow === */
+.flow {
+  padding: 40px;
+}
+
+/* === Grid === */
+.grid {
+  column-count: 4;
+  column-gap: 20px;
+}
+
+.grid-item {
+  break-inside: avoid;
+  margin-bottom: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.grid-item img {
+  width: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.grid-item:hover img {
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
+}
+
+/* === Text block in grid === */
+.grid-item.text-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  min-height: 180px;
+  cursor: default;
+}
+
+.grid-item.text-block .text-content {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #333;
+  white-space: pre-line;
+  text-align: left;
+}
+
+/* === Expanded view === */
+.expanded-section {
+  width: 100vw;
+  margin-left: -40px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 60px 40px;
+  animation: fadeIn 0.35s ease;
+}
+
+.expanded-section .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  z-index: 10;
+}
+.expanded-section .close-btn:hover { color: #333; }
+
+.expanded-section .nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 16px;
+  z-index: 10;
+  transition: color 0.15s;
+}
+.expanded-section .nav-arrow:hover { color: #333; }
+.expanded-section .nav-arrow:disabled { opacity: 0; cursor: default; }
+.expanded-section .nav-arrow[data-dir="prev"] { left: 8px; }
+.expanded-section .nav-arrow[data-dir="next"] { right: 8px; }
+
+.img-stage {
+  position: relative;
+  max-width: min(88vw, 1400px);
+  max-height: 85vh;
+  cursor: zoom-in;
+}
+.img-stage.enlarged {
+  max-height: none;
+  cursor: zoom-out;
+}
+.img-stage img {
+  max-width: min(88vw, 1400px);
+  max-height: 85vh;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.img-stage.enlarged img {
+  max-height: none;
+}
+.img-stage .img-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.img-stage .img-back.visible {
+  opacity: 1;
+}
+
+/* === Expanded text block === */
+.expanded-section.text-expanded {
+  min-height: 80vh;
+}
+.expanded-section.text-expanded .text-content-expanded {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  line-height: 1.7;
+  color: #222;
+  max-width: 640px;
+  white-space: pre-line;
+  text-align: left;
+}
+
+/* === Footer === */
+.site-footer {
+  padding: 60px 40px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.site-footer span {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #ccc;
+  letter-spacing: 0.03em;
+}
+.site-footer a {
+  color: #ccc;
+  text-decoration: none;
+}
+.site-footer a:hover { color: #888; }
+
+/* === Animation === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* === Copy protection === */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* ===================== */
+/* === RESPONSIVE ====== */
+/* ===================== */
+
+/* 6 columns — ultrawide */
+@media (min-width: 2200px) { .grid { column-count: 6; } }
+
+/* 5 columns */
+@media (min-width: 1800px) and (max-width: 2199px) { .grid { column-count: 5; } }
+
+/* 4 columns — default above */
+
+/* 3 columns */
+@media (max-width: 1400px) { .grid { column-count: 3; } }
+
+/* 2 columns — tablet landscape: simple feed, no interaction */
+@media (max-width: 1100px) {
+  .grid { column-count: 2; column-gap: 16px; }
+  .grid-item { margin-bottom: 16px; cursor: default; }
+  .grid-item img { pointer-events: none; }
+  .flow { padding: 24px; }
+  .site-header { padding: 24px 24px 0; }
+  .site-footer { padding: 40px 24px 24px; }
+}
+
+/* 1 column — mobile: pure feed */
+@media (max-width: 640px) {
+  .grid { column-count: 1; column-gap: 0; }
+  .grid-item { margin-bottom: 12px; cursor: default; }
+  .grid-item.text-block { padding: 24px 16px; min-height: 120px; }
+  .grid-item.text-block .text-content { font-size: 15px; }
+  .flow { padding: 12px; }
+  .site-header { padding: 16px 12px 0; }
+  .site-footer { padding: 32px 12px 16px; }
+}
